@@ -13,7 +13,7 @@ void emulateDevice(char * data, uint32_t address, uint8_t DLC)
     tx_frame.data.u8[i] = data[i];
   
   ESP32Can.CANWriteFrame(&tx_frame);
-  delay(100); //We need to change it for sth like wait for ACK.
+  delay(500); //We need to change it for sth like wait for ACK.
 }
 void setup() {
     Serial.begin(115200);
