@@ -1,45 +1,55 @@
 import socket
-from time import time
+import time
 import DATA as dt
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('192.168.0.157', 1313))
-sock.listen(1)
+#sock.listen(1)
 
 start_time = 0
 stop_time = 0
 lock = True
-interval = 10
+interval = 1
+sum_data = 0
 if __name__ == "__main__":
     print("Program started")
     try:
         while 1:
-            client, address = sock.accept()
-            print ("Connected from", address)
+            #client, address = sock.accept()
+            #print ("Connected from", address)
             # loop serving the new client
             while True:
-                receivedData = client.recv(1024)
+                print("Waiting for data")
+                receivedData, address = sock.recvfrom(1024)
+
+
 
                 if not receivedData: break
                 else:
                     if lock:
-                        start_time = time()
+                        start_time = time.time_ns()
                         lock = False
                         #print(start_time)
                     interval -= 1
+                    sum_data += len(receivedData)
+                    print(receivedData)
                 if interval == 0:
-                    #print(len(receivedData))
-                    #print(receivedData)
+
                     break
 
-            client.close()
+
             #print("NO DATA")
             if start_time > 0:
-                stop_time = time()
+                time.sleep(1e-6)
+                stop_time = time.time_ns()
                 #print("TIME")
-                print(stop_time - start_time)
+                print(sum_data)
+                print(stop_time, start_time)
+                print((1e9 * sum_data)/(stop_time - start_time))
                 start_time = 0
                 lock = True
-                interval = 10
+                interval = 1
+                sum_data = 0
+            #client.close()
             print("Disconnected from", address)
     finally:
         sock.close()
