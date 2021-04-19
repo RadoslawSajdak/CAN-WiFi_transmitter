@@ -1,4 +1,5 @@
 import socket
+import DATA as dt
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(('192.168.0.157', 1313))
 sock.listen(1)
@@ -13,8 +14,10 @@ if __name__ == "__main__":
             # loop serving the new client
             while True:
                 receivedData = client.recv(1024)
+
                 if not receivedData: break
                 # Echo back the same data you just received
+                print(len(receivedData))
                 print(receivedData)
                 client.send(receivedData)
 

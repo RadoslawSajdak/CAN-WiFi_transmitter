@@ -13,7 +13,7 @@ void emulateDevice(char * data, uint32_t address, uint8_t DLC)
     tx_frame.data.u8[i] = data[i];
   
   ESP32Can.CANWriteFrame(&tx_frame);
-  delay(500); //We need to change it for sth like wait for ACK.
+  //delay(500); //We need to change it for sth like wait for ACK.
 }
 void setup() {
     Serial.begin(115200);
@@ -27,7 +27,7 @@ void setup() {
     //start CAN Module
     ESP32Can.CANInit();
 }
-
+int iterator = 0;
 void loop() {
     CAN_frame_t rx_frame;
     //receive next CAN frame from queue
@@ -35,31 +35,26 @@ void loop() {
 
       //do stuff!
       if(rx_frame.FIR.B.FF==CAN_frame_std)
-        printf("New standard frame");
+       ;// printf("New standard frame");
       else
-        printf("New extended frame");
+      ;//  printf("New extended frame");
 
       if(rx_frame.FIR.B.RTR==CAN_RTR)
-        printf(" RTR from 0x%08x, DLC %d\r\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
+        ;//printf(" RTR from 0x%08x, DLC %d\r\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
       else{
-        printf(" from 0x%08x, DLC %d\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
-        for(int i = 0; i < 8; i++){
-          printf("%c\t", (char)rx_frame.data.u8[i]);
-        }
-        printf("\n");
+        ;//printf(" from 0x%08x, DLC %d\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
+        // for(int i = 0; i < 8; i++){
+        //   printf("%c\t", (char)rx_frame.data.u8[i]);
+        // }
+        // printf("\n");
       }
     }
     else
     {
       
-      emulateDevice("Device0 ", 0x1632, 8);
+      emulateDevice("Device", iterator, 6);
       printf("Dev0 Done!\n\r");
-      emulateDevice("Device1 ", 0x011, 8);
-      printf("Dev1 Done!\n\r");
-      emulateDevice("Device2 ", 0x02, 8);
-      printf("Dev2 Done!\n\r");
-      emulateDevice("Device3 ", 0x11fc, 8);
-      printf("Dev3 Done!\n\r");
-      
+      iterator++;      
+      if(iterator==11) while(1);
     }
 }
