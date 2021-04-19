@@ -55,6 +55,6 @@ void loop() {
       emulateDevice("Device", iterator, 6);
       printf("Dev0 Done!\n\r");
       iterator++;      
-      if(iterator==11) while(1);
+      if(iterator==100000) while(1);
     }
 }

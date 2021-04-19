@@ -2,7 +2,7 @@
 #include <CAN_config.h>
 
 #define WIFI_ENABLED 1
-#define BUFFOR_LEN 1024/88
+#define BUFFOR_LEN 200
 #if WIFI_ENABLED
   #include <WiFi.h>
   WiFiClient client;
@@ -32,7 +32,7 @@ void setup() {
     //CAN_cfg.rx_pin_id = GPIO_NUM_4;
     CAN_cfg.tx_pin_id = GPIO_NUM_13;
     CAN_cfg.rx_pin_id = GPIO_NUM_12;
-    CAN_cfg.rx_queue = xQueueCreate(10,sizeof(CAN_frame_t));
+    CAN_cfg.rx_queue = xQueueCreate(1024,sizeof(CAN_frame_t));
     //initialize CAN Module
     ESP32Can.CANInit();
 }
