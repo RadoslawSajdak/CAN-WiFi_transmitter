@@ -40,7 +40,7 @@ void setup() {
     //initialize CAN Module
     ESP32Can.CANInit();
 }
-uint8_t dataBuffer [BUFFOR_LEN][11];
+uint8_t dataBuffer [BUFFOR_LEN][12];
 String buffer = "";
 int iterator = 0;
 void loop() {
