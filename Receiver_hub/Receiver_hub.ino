@@ -75,6 +75,7 @@ void loop() {
       {
         uint8_t tempTable[BUFFOR_LEN * 15];
         memset(tempTable, 0, sizeof(tempTable));
+        // TODO: Something is wrong with last byte of every frame here
         for (int i = 0; i < BUFFOR_LEN; i++)
         {
           for (int k = 0; k < 12; k++)
