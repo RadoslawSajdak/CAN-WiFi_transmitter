@@ -5,6 +5,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('192.168.0.157', 1313))
 #sock.listen(1)
 
+BUFFER_LEN = 100
 start_time = 0
 stop_time = 0
 lock = True
@@ -19,7 +20,7 @@ if __name__ == "__main__":
             # loop serving the new client
             while True:
                 print("Waiting for data")
-                receivedData, address = sock.recvfrom(1024)
+                receivedData, address = sock.recvfrom(BUFFER_LEN * 12)
 
 
 

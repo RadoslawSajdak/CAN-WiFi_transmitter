@@ -13,7 +13,7 @@ void emulateDevice(char * data, uint32_t address, uint8_t DLC)
     tx_frame.data.u8[i] = data[i];
   
   ESP32Can.CANWriteFrame(&tx_frame);
-  //delay(500); //We need to change it for sth like wait for ACK.
+  //delay(100); //We need to change it for sth like wait for ACK.
 }
 void setup() {
     Serial.begin(115200);
@@ -23,7 +23,7 @@ void setup() {
     //CAN_cfg.rx_pin_id = GPIO_NUM_12;
     CAN_cfg.tx_pin_id = GPIO_NUM_5; // ESP32-CAM
     CAN_cfg.rx_pin_id = GPIO_NUM_4;
-    CAN_cfg.rx_queue = xQueueCreate(10,sizeof(CAN_frame_t));
+    CAN_cfg.rx_queue = xQueueCreate(100,sizeof(CAN_frame_t));
     //start CAN Module
     ESP32Can.CANInit();
 }
@@ -52,9 +52,9 @@ void loop() {
     else
     {
       
-      emulateDevice("Device", iterator, 6);
+      emulateDevice("Deviceee", iterator, 8);
       printf("Dev0 Done!\n\r");
       iterator++;      
-      if(iterator==1024) while(1);
+      if(iterator==100) while(1);
     }
 }

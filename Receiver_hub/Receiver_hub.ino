@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define WIFI_ENABLED 1
-#define BUFFOR_LEN 200
+#define BUFFOR_LEN 100
 #if WIFI_ENABLED
   #include <WiFi.h>
   WiFiClient client;
@@ -62,26 +62,33 @@ void loop() {
         //printf(" from 0x%08x, DLC %d\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
 
         //rx_frame.MsgID &= 0xffffffff;
-        for(uint8_t i = 0; i < 4; i++) /*dataBuffer[iterator][i]*/buffer += rx_frame.MsgID & (0xff << (24 - 8 * i));
-        for(uint8_t i = 4; i < 12; i++) /*dataBuffer[iterator][i]*/buffer += rx_frame.data.u8[i - 4];
+        for(uint8_t i = 0; i < 4; i++) dataBuffer[iterator][i]= rx_frame.MsgID & (0xff << (24 - 8 * i));
+        for(uint8_t i = 4; i < 12; i++) dataBuffer[iterator][i]= rx_frame.data.u8[i - 4];
+        for(int g = 0; g < 12; g++) printf("%x",dataBuffer[iterator][g]);
+        printf("\n");
         iterator++;
         //client.write((uint8_t *)dataToSend, 11);
         //client.flush();
       }
+      
       if(iterator == BUFFOR_LEN)
       {
-        /*uint8_t tempTable[BUFFOR_LEN * 11];
-        for (int i = 0; i < BUFFOR_LEN; i+=11)
+        uint8_t tempTable[BUFFOR_LEN * 15];
+        memset(tempTable, 0, sizeof(tempTable));
+        for (int i = 0; i < BUFFOR_LEN; i++)
         {
-          for (int k = 0; k < 11; k++)
+          for (int k = 0; k < 12; k++)
           {
-            tempTable[i + k] = dataBuffer[i][k];
+            tempTable[i * 12 + k] = dataBuffer[i][k];
+            printf("%x, %x \n",dataBuffer[i][k], tempTable[i * 12 + k]);
           }
-        }*/
-        buffer = "";
-        for(int i=0; i < BUFFOR_LEN * 11 *64; i++) buffer += '1';
+        }
+        printf("CONVERTED!\n");
+        for(int g = 0; g < 1024; g++) printf("%x",tempTable[g]);
+        printf("\n");
+
         udpClient.beginPacket(host,port);
-        for(int i = 0; i < 1024; i++) udpClient.write(buffer[i]);
+        for(int i = 0; i < BUFFOR_LEN * 12; i++) udpClient.write(tempTable[i]);
         udpClient.endPacket();
         
         buffer.clear();
