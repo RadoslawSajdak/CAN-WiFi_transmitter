@@ -49,8 +49,8 @@ void loop() {
     
     
     if(xQueueReceive(CAN_cfg.rx_queue,&rx_frame, 3*portTICK_PERIOD_MS)==pdTRUE){
-      for(uint8_t i = 0; i < 4; i++) printf("%x ", (rx_frame.MsgID & (0xff << (24 - 8 * i))) >> (24 - 8 * i));
-      printf("\n\r");
+      //for(uint8_t i = 0; i < 4; i++) printf("%x ", (rx_frame.MsgID & (0xff << (24 - 8 * i))) >> (24 - 8 * i));
+      //printf("\n\r");
       //do stuff!
      // if(rx_frame.FIR.B.FF==CAN_frame_std)
         //printf("New standard frame");

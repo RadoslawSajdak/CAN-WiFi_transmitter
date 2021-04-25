@@ -20,7 +20,7 @@ def decode(toDecode):
             address_local += (str(hex(toDecode[i])))[2:4]
         else:
             data |= toDecode[i] << (56 - 8*(i - 4))
-            print(bin(data))
+            print(hex(data))
     print(address_local[-4:])
 if __name__ == "__main__":
     print("Program started")

@@ -2,16 +2,18 @@
 #include <CAN_config.h>
 
 CAN_device_t CAN_cfg;
-void emulateDevice(char * data, uint32_t address, uint8_t DLC)
+void emulateDevice(const uint64_t data, uint32_t address, uint8_t DLC)
 {
   CAN_frame_t tx_frame;
-
+  uint32_t data_h = data >> 32;
+  uint32_t data_l = data & 0xffffffff;
   tx_frame.FIR.B.FF = CAN_frame_std;
   tx_frame.MsgID = address;
   tx_frame.FIR.B.DLC = DLC;
-  for(uint8_t i = 0; i < DLC; i++)
-    tx_frame.data.u8[i] = data[i];
-  
+  for(uint8_t i = 0; i < DLC; i++){
+    if(i < 4) tx_frame.data.u8[i] = (data_h & (0xff << (24 - 8*i))) >> (24 - 8*i);
+    else tx_frame.data.u8[i] = (data_l & (0xff << (24 - 8*(i - 4)))) >> (24 - 8*(i-4));
+  }
   ESP32Can.CANWriteFrame(&tx_frame);
   //delay(100); //We need to change it for sth like wait for ACK.
 }
@@ -51,8 +53,8 @@ void loop() {
     }
     else
     {
-      
-      emulateDevice(0xffeeaabbcc, 0x660, 8);
+      uint64_t var = 0x1122334455667788;
+      emulateDevice(var, 0x660, 8);
       printf("Dev2 Done!\n\r");
       iterator += 5;      
       if(iterator >= 100) while(1);
