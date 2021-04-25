@@ -19,7 +19,7 @@ def decode(toDecode):
 
     return ("0x" + str(format(address_local,"04x")), hex(data))
 
-if __name__ == "__main__":
+def reading():
     print("Program started")
     try:
         while 1:
@@ -32,10 +32,13 @@ if __name__ == "__main__":
                     for i in range(0, len(receivedData), 12):
                         val = decode(receivedData[i:i + 12])
                         dt.CAN[val[0]].put(val[1])
-                    if(dt.CAN["0x0660"].not_empty): print(dt.CAN["0x0660"].get())
+                        print(val)
 
             print("Disconnected from", address)
     finally:
         sock.close()
+
+if __name__ == "__main__":
+    reading()
     
 

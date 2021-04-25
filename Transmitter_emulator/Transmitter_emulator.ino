@@ -53,8 +53,8 @@ void loop() {
     }
     else
     {
-      uint64_t var = 0xbeaf;
-      emulateDevice(var, 0x206, 8);
+      uint64_t var = 0x112321;
+      emulateDevice(var, 0x1, 8);
       printf("Dev2 Done!\n\r");
       iterator += 5;      
       if(iterator >= 100) while(1);
