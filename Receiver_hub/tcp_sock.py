@@ -9,14 +9,15 @@ BUFFER_LEN = 10
 
 
 def decode(toDecode):
-    address_local = ""
+    address_local = 0
     data = 0
     for i in range(12):
         if i < 4:
-            address_local += (str(hex(toDecode[i])))[2:4]
+            address_local |= (toDecode[i] << (24 - 8 * i))#+= (str(hex(toDecode[i])))[2:4]
         else:
             data |= toDecode[i] << (56 - 8*(i - 4))
-    return (("0x" + address_local[-4:]), hex(data))
+
+    return ("0x" + str(format(address_local,"04x")), hex(data))
 
 if __name__ == "__main__":
     print("Program started")
@@ -31,7 +32,7 @@ if __name__ == "__main__":
                     for i in range(0, len(receivedData), 12):
                         val = decode(receivedData[i:i + 12])
                         dt.CAN[val[0]].put(val[1])
-                    print(dt.CAN["0x0660"].get())
+                    if(dt.CAN["0x0660"].not_empty): print(dt.CAN["0x0660"].get())
 
             print("Disconnected from", address)
     finally:

@@ -49,24 +49,27 @@ void loop() {
     
     
     if(xQueueReceive(CAN_cfg.rx_queue,&rx_frame, 3*portTICK_PERIOD_MS)==pdTRUE){
-      //for(uint8_t i = 0; i < 4; i++) printf("%x ", (rx_frame.MsgID & (0xff << (24 - 8 * i))) >> (24 - 8 * i));
-      //printf("\n\r");
-      //do stuff!
-     // if(rx_frame.FIR.B.FF==CAN_frame_std)
-        //printf("New standard frame");
-      //else
-        //printf("New extended frame");
+      printf("New frame with id: %x\n", rx_frame.MsgID);
+      if(rx_frame.FIR.B.FF==CAN_frame_std)
+        printf("This is standard frame!\n");
+      else
+        printf("This is extended frame!\n");
 
       if(rx_frame.FIR.B.RTR==CAN_RTR)
-        ;//printf(" RTR from 0x%08x, DLC %d\r\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
+        printf(" RTR from 0x%08x, DLC %d\r\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
       else{
         //printf(" from 0x%08x, DLC %d\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
 
         //rx_frame.MsgID &= 0xffffffff;
-        for(uint8_t i = 0; i < 4; i++) dataBuffer[iterator][i]= (rx_frame.MsgID & (0xff << (24 - 8 * i))) >> (24 - 8 * i);
+        printf("\nPush msgID: ");
+        for(uint8_t i = 0; i < 4; i++) {
+          dataBuffer[iterator][i]= (rx_frame.MsgID & (0xff << (24 - 8 * i))) >> (24 - 8 * i);
+          printf("%x",dataBuffer[iterator][i]);
+        }
+        printf("\nPush everything: ");
         for(uint8_t i = 4; i < 12; i++) dataBuffer[iterator][i]= rx_frame.data.u8[i - 4];
         for(int g = 0; g < 12; g++) printf("%x",dataBuffer[iterator][g]);
-        //printf("\n");
+        printf("\n");
         iterator++;
         //client.write((uint8_t *)dataToSend, 11);
         //client.flush();
