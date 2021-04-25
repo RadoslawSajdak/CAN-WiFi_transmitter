@@ -5,12 +5,23 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(('192.168.0.157', 1313))
 #sock.listen(1)
 
-BUFFER_LEN = 100
+BUFFER_LEN = 10
 start_time = 0
 stop_time = 0
 lock = True
 interval = 1
 sum_data = 0
+
+def decode(toDecode):
+    address_local = ""
+    data = 0
+    for i in range(12):
+        if i < 4:
+            address_local += (str(hex(toDecode[i])))[2:4]
+        else:
+            data |= toDecode[i] << (56 - 8*(i - 4))
+            print(bin(data))
+    print(address_local[-4:])
 if __name__ == "__main__":
     print("Program started")
     try:
@@ -22,8 +33,6 @@ if __name__ == "__main__":
                 print("Waiting for data")
                 receivedData, address = sock.recvfrom(BUFFER_LEN * 12)
 
-
-
                 if not receivedData: break
                 else:
                     if lock:
@@ -33,6 +42,8 @@ if __name__ == "__main__":
                     interval -= 1
                     sum_data += len(receivedData)
                     print(receivedData)
+                    print()
+                    decode(receivedData[0:12])
                 if interval == 0:
 
                     break

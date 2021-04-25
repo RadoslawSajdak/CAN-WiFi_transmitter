@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define WIFI_ENABLED 1
-#define BUFFOR_LEN 100
+#define BUFFOR_LEN 10
 #if WIFI_ENABLED
   #include <WiFi.h>
   WiFiClient client;
@@ -12,10 +12,10 @@
 CAN_device_t CAN_cfg;
 
 
-const char* ssid = "TP-Link_2G";
-const char* password = "SebaCwel69";
+const char* ssid = /*"RedmiPro";*/"TP-Link_2G";
+const char* password = /*"Radek$1234";*/"SebaCwel69";
 const uint16_t port = 1313;
-const char* host = "192.168.0.157";
+const char* host = "192.168.0.157";//"192.168.43.239";
 
 void setup() {
     Serial.begin(115200);
@@ -47,9 +47,10 @@ void loop() {
     CAN_frame_t rx_frame;
     //receive next CAN frame from queue
     
-
+    
     if(xQueueReceive(CAN_cfg.rx_queue,&rx_frame, 3*portTICK_PERIOD_MS)==pdTRUE){
-
+      for(uint8_t i = 0; i < 4; i++) printf("%x ", (rx_frame.MsgID & (0xff << (24 - 8 * i))) >> (24 - 8 * i));
+      printf("\n\r");
       //do stuff!
      // if(rx_frame.FIR.B.FF==CAN_frame_std)
         //printf("New standard frame");
@@ -62,10 +63,10 @@ void loop() {
         //printf(" from 0x%08x, DLC %d\n",rx_frame.MsgID,  rx_frame.FIR.B.DLC);
 
         //rx_frame.MsgID &= 0xffffffff;
-        for(uint8_t i = 0; i < 4; i++) dataBuffer[iterator][i]= rx_frame.MsgID & (0xff << (24 - 8 * i));
+        for(uint8_t i = 0; i < 4; i++) dataBuffer[iterator][i]= (rx_frame.MsgID & (0xff << (24 - 8 * i))) >> (24 - 8 * i);
         for(uint8_t i = 4; i < 12; i++) dataBuffer[iterator][i]= rx_frame.data.u8[i - 4];
         for(int g = 0; g < 12; g++) printf("%x",dataBuffer[iterator][g]);
-        printf("\n");
+        //printf("\n");
         iterator++;
         //client.write((uint8_t *)dataToSend, 11);
         //client.flush();
@@ -81,12 +82,11 @@ void loop() {
           for (int k = 0; k < 12; k++)
           {
             tempTable[i * 12 + k] = dataBuffer[i][k];
-            printf("%x, %x \n",dataBuffer[i][k], tempTable[i * 12 + k]);
           }
         }
-        printf("CONVERTED!\n");
-        for(int g = 0; g < 1024; g++) printf("%x",tempTable[g]);
-        printf("\n");
+        //printf("CONVERTED!\n");
+        //for(int g = 0; g < 1024; g++) printf("%x",tempTable[g]);
+        //printf("\n");
 
         udpClient.beginPacket(host,port);
         for(int i = 0; i < BUFFOR_LEN * 12; i++) udpClient.write(tempTable[i]);
@@ -98,6 +98,6 @@ void loop() {
 
       }
       //respond to sender
-      ESP32Can.CANWriteFrame(&rx_frame);
+      //ESP32Can.CANWriteFrame(&rx_frame);
     }
 }

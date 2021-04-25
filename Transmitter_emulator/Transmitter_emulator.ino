@@ -52,9 +52,9 @@ void loop() {
     else
     {
       
-      emulateDevice("Deviceee", iterator, 8);
-      printf("Dev0 Done!\n\r");
-      iterator++;      
-      if(iterator==100) while(1);
+      emulateDevice(0xffeeaabbcc, 0x660, 8);
+      printf("Dev2 Done!\n\r");
+      iterator += 5;      
+      if(iterator >= 100) while(1);
     }
 }
